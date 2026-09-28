@@ -1281,7 +1281,9 @@
         function playCurrentTrack() {
             audio.play().then(() => {
                 playBtn.classList.replace('fa-play', 'fa-pause');
-            }).catch(() => {});
+            }).catch(() => {
+                playBtn.classList.replace('fa-pause', 'fa-play');
+            });
         }
 
         function togglePlay() {
@@ -1493,7 +1495,10 @@
         renderDates();
 
         // --- SYSTEM CORE ---
-        function unlockTablet() { document.getElementById('lockscreen').classList.add('unlocked'); }
+        function unlockTablet() {
+            document.getElementById('lockscreen').classList.add('unlocked');
+            playCurrentTrack();
+        }
 
         const clockFormatToggle = document.getElementById('clock-format-toggle');
         let use24HourClock = localStorage.getItem('clockFormat') !== '12';
