@@ -2,9 +2,9 @@
   "rules": {
     "messages": {
       ".read": true,
-      ".write": "auth != null && auth.uid === '7aBf7N7XyCfF0pCeGfJzLtsl2l83'",
+      ".write": "auth != null && auth.uid === '3rOBO4lnszOZcfWjk8HLcCcpunu1'",
       "$messageId": {
-        ".write": "(!data.exists() && newData.exists()) || (auth != null && auth.uid === '7aBf7N7XyCfF0pCeGfJzLtsl2l83')"
+        ".write": "(!data.exists() && newData.exists()) || (auth != null && auth.uid === '3rOBO4lnszOZcfWjk8HLcCcpunu1')"
       }
     },
     "stats": {
