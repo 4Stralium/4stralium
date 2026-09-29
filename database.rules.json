@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "messages": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === '7aBf7N7XyCfF0pCeGfJzLtsl2l83'",
+      "$messageId": {
+        ".write": "(!data.exists() && newData.exists()) || (auth != null && auth.uid === '7aBf7N7XyCfF0pCeGfJzLtsl2l83')"
+      }
+    },
+    "stats": {
+      "visits": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
