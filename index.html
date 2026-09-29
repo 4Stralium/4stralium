@@ -1377,8 +1377,18 @@
                 adminLoginDialog.close();
                 adminLoginForm.reset();
             } catch (error) {
-                adminLoginStatus.textContent = 'No se pudo iniciar sesión. Revisa tus datos y la configuración de Firebase.';
-                console.error('Error de inicio de sesión:', error);
+                const authErrorMessages = {
+                    'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+                    'auth/wrong-password': 'La contraseña es incorrecta.',
+                    'auth/user-not-found': 'No existe una cuenta con ese correo.',
+                    'auth/invalid-email': 'El formato del correo no es válido.',
+                    'auth/user-disabled': 'Esta cuenta está deshabilitada.',
+                    'auth/too-many-requests': 'Demasiados intentos. Espera un momento e inténtalo de nuevo.',
+                    'auth/network-request-failed': 'No hay conexión con Firebase. Revisa tu conexión.',
+                    'auth/operation-not-allowed': 'El acceso con correo y contraseña no está habilitado en Firebase.'
+                };
+                adminLoginStatus.textContent = authErrorMessages[error.code] || `No se pudo iniciar sesión (${error.code || 'error desconocido'}).`;
+                console.error('Error de inicio de sesión:', error.code, error);
             }
         });
 
