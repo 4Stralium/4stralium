@@ -36,7 +36,7 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(3px);
             z-index: 0;
         }
 
@@ -88,7 +88,7 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px);
             z-index: -1;
         }
 
@@ -144,8 +144,8 @@
 
         .glass-panel {
             background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(10px) saturate(140%);
+            -webkit-backdrop-filter: blur(10px) saturate(140%);
             border: 1px solid rgba(255, 255, 255, 0.28);
             border-radius: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -291,7 +291,7 @@
             padding: 8px 10px 6px;
             border-radius: 18px;
             background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(6px);
             box-shadow: 0 16px 32px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.14);
             animation: float-card 6s ease-in-out infinite;
         }
@@ -345,8 +345,8 @@
             width: 215px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.12);
             border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             animation: float-card 7s ease-in-out infinite;
         }
 
@@ -389,8 +389,8 @@
             gap: 10px;
             color: white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.14);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             animation: float-card 8s ease-in-out infinite reverse;
         }
 
@@ -554,8 +554,8 @@
             gap: 6px;
             transition: height 0.25s ease, transform 0.25s ease;
             overflow: hidden;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             animation: float-card 7.5s ease-in-out infinite;
         }
 
@@ -764,8 +764,8 @@
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 28px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.45);
-            backdrop-filter: blur(26px) saturate(150%);
-            -webkit-backdrop-filter: blur(26px) saturate(150%);
+            backdrop-filter: blur(12px) saturate(130%);
+            -webkit-backdrop-filter: blur(12px) saturate(130%);
             padding: 20px 22px 18px;
             opacity: 0;
             pointer-events: none;
@@ -1542,7 +1542,7 @@
 
         function initStars() {
             const starsLayer = document.getElementById('stars-layer');
-            const totalStars = 60;
+            const totalStars = 24;
 
             for (let i = 0; i < totalStars; i++) {
                 const star = document.createElement('span');
@@ -1562,6 +1562,13 @@
 
                 starsLayer.appendChild(star);
             }
+
+            const updateStarsVisibility = () => {
+                starsLayer.classList.toggle('paused', document.hidden);
+            };
+
+            document.addEventListener('visibilitychange', updateStarsVisibility);
+            updateStarsVisibility();
         }
 
         const NOTEBOOK_NOTES_KEY = 'notebook-notes';
@@ -1760,7 +1767,7 @@
             }
         }
 
-        setInterval(updateClockAndCalendar, 1000);
+        setInterval(updateClockAndCalendar, 60000);
         updateClockAndCalendar();
         buildCalendar();
         loadTrack(currentTrackIndex);
