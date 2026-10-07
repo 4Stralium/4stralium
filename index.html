@@ -185,10 +185,26 @@
     </dialog>
 
     <div class="bottom-dock glass-panel">
-        <a href="https://open.spotify.com/user/31nfj4ygykkxki42enzjnyj7jdmy?si=30d55e1dc09f455f" target="_blank" rel="noopener noreferrer" class="dock-icon icon-spotify" aria-label="Spotify" aria-describedby="spotify-tooltip"><i class="fa-brands fa-spotify" aria-hidden="true"></i><span class="dock-tooltip" id="spotify-tooltip" role="tooltip">Escucha mi música favorita</span></a>
-        <a href="https://discord.com/users/1251665194736943117" target="_blank" rel="noopener noreferrer" class="dock-icon icon-discord" aria-label="Discord" aria-describedby="discord-tooltip"><i class="fa-brands fa-discord" aria-hidden="true"></i><span class="dock-tooltip" id="discord-tooltip" role="tooltip">Encuéntrame en Discord</span></a>
-        <a href="https://www.roblox.com/users/894888300/profile" target="_blank" rel="noopener noreferrer" class="dock-icon icon-roblox" aria-label="Roblox" aria-describedby="roblox-tooltip"><i class="fa-brands fa-roblox-creator-studio" aria-hidden="true"></i><span class="dock-tooltip" id="roblox-tooltip" role="tooltip">Visita mi perfil de Roblox</span></a>
-        <button type="button" class="dock-icon icon-book" id="book-btn" aria-label="Abrir cuaderno" aria-describedby="book-tooltip"><i class="fa-solid fa-book" aria-hidden="true"></i><span class="dock-tooltip" id="book-tooltip" role="tooltip">Apuntes y fechas importantes</span></button>
+        <a href="https://open.spotify.com/user/31nfj4ygykkxki42enzjnyj7jdmy?si=30d55e1dc09f455f" target="_blank" rel="noopener noreferrer" class="dock-icon icon-spotify" aria-label="Spotify" aria-describedby="spotify-tooltip">
+            <i class="fa-brands fa-spotify" aria-hidden="true"></i>
+            <span class="dock-label">Spotify</span>
+            <span class="dock-tooltip" id="spotify-tooltip" role="tooltip">Escucha mi música favorita</span>
+        </a>
+        <a href="https://discord.com/users/1251665194736943117" target="_blank" rel="noopener noreferrer" class="dock-icon icon-discord" aria-label="Discord" aria-describedby="discord-tooltip">
+            <i class="fa-brands fa-discord" aria-hidden="true"></i>
+            <span class="dock-label">Discord</span>
+            <span class="dock-tooltip" id="discord-tooltip" role="tooltip">Encuéntrame en Discord</span>
+        </a>
+        <a href="https://www.roblox.com/users/894888300/profile" target="_blank" rel="noopener noreferrer" class="dock-icon icon-roblox" aria-label="Roblox" aria-describedby="roblox-tooltip">
+            <i class="fa-brands fa-roblox-creator-studio" aria-hidden="true"></i>
+            <span class="dock-label">Roblox</span>
+            <span class="dock-tooltip" id="roblox-tooltip" role="tooltip">Visita mi perfil de Roblox</span>
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="dock-icon icon-tiktok" aria-label="TikTok" aria-describedby="tiktok-tooltip">
+            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+            <span class="dock-label">TikTok</span>
+            <span class="dock-tooltip" id="tiktok-tooltip" role="tooltip">Mira mi contenido en TikTok</span>
+        </a>
     </div>
 
     <script type="module">
@@ -454,37 +470,79 @@
         const btnRepeat = document.getElementById('btn-repeat');
         const btnHeart = document.getElementById('btn-heart');
 
-        // Se corrigieron las referencias de los botones multimedia
         function loadTrack(index) {
             const track = playlist[index];
+            if (!track || !audio) return;
             audio.src = track.url;
-            trackTitle.textContent = track.title;
-            playerArt.src = track.art;
+            audio.load();
+            if (trackTitle) trackTitle.textContent = track.title;
+            if (playerArt) playerArt.src = track.art;
         }
 
         function playCurrentTrack() {
-            audio.play().then(() => {
-                playBtn.classList.replace('fa-play', 'fa-pause');
-            }).catch(() => {
-                playBtn.classList.replace('fa-pause', 'fa-play');
-            });
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play().then(() => playBtn.classList.replace('fa-play', 'fa-pause')).catch(err => console.log(err));
-            } else {
-                audio.pause();
-                playBtn.classList.replace('fa-pause', 'fa-play');
+            if (!audio) return;
+            const playPromise = audio.play();
+            if (playPromise && typeof playPromise.then === 'function') {
+                playPromise
+                    .then(() => {
+                        if (playBtn) playBtn.classList.replace('fa-play', 'fa-pause');
+                    })
+                    .catch(() => {
+                        if (playBtn) playBtn.classList.replace('fa-pause', 'fa-play');
+                    });
             }
         }
 
-        playBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
-        document.getElementById('btn-next').addEventListener('click', (e) => { e.stopPropagation(); currentTrackIndex = (currentTrackIndex + 1) % playlist.length; loadTrack(currentTrackIndex); togglePlay(); });
-        document.getElementById('btn-prev').addEventListener('click', (e) => { e.stopPropagation(); currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; loadTrack(currentTrackIndex); togglePlay(); });
-        btnRepeat.addEventListener('click', (e) => { e.stopPropagation(); isLooping = !isLooping; audio.loop = isLooping; btnRepeat.classList.toggle('active-btn', isLooping); });
-        btnHeart.addEventListener('click', (e) => { e.stopPropagation(); btnHeart.classList.toggle('liked'); });
-        audio.addEventListener('ended', () => { if (!isLooping) document.getElementById('btn-next').click(); });
+        function togglePlay() {
+            if (!audio) return;
+            if (audio.paused) {
+                playCurrentTrack();
+            } else {
+                audio.pause();
+                if (playBtn) playBtn.classList.replace('fa-pause', 'fa-play');
+            }
+        }
+
+        function tryAutoplayAudio() {
+            if (!audio) return;
+            audio.muted = true;
+            audio.volume = 0.55;
+            const playPromise = audio.play();
+            if (playPromise && typeof playPromise.then === 'function') {
+                playPromise.then(() => {
+                    audio.muted = false;
+                    if (playBtn) playBtn.classList.replace('fa-play', 'fa-pause');
+                }).catch(() => {
+                    audio.muted = true;
+                    if (playBtn) playBtn.classList.replace('fa-pause', 'fa-play');
+                });
+            }
+        }
+
+        if (playBtn) {
+            playBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
+        }
+        document.getElementById('btn-next').addEventListener('click', (e) => { e.stopPropagation(); currentTrackIndex = (currentTrackIndex + 1) % playlist.length; loadTrack(currentTrackIndex); playCurrentTrack(); });
+        document.getElementById('btn-prev').addEventListener('click', (e) => { e.stopPropagation(); currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; loadTrack(currentTrackIndex); playCurrentTrack(); });
+        if (btnRepeat) {
+            btnRepeat.addEventListener('click', (e) => { e.stopPropagation(); isLooping = !isLooping; if (audio) audio.loop = isLooping; btnRepeat.classList.toggle('active-btn', isLooping); });
+        }
+        if (btnHeart) {
+            btnHeart.addEventListener('click', (e) => { e.stopPropagation(); btnHeart.classList.toggle('liked'); });
+        }
+        if (audio) {
+            audio.addEventListener('ended', () => { if (!isLooping) document.getElementById('btn-next').click(); });
+            audio.setAttribute('autoplay', 'autoplay');
+            audio.volume = 0.55;
+        }
+
+        window.addEventListener('pointerdown', tryAutoplayAudio, { once: true });
+        window.addEventListener('keydown', tryAutoplayAudio, { once: true });
+        window.addEventListener('touchstart', tryAutoplayAudio, { once: true });
+        window.addEventListener('load', () => {
+            loadTrack(currentTrackIndex);
+            setTimeout(tryAutoplayAudio, 200);
+        });
 
         function initVisitCounter() {
             const counterEl = document.getElementById('visit-count');
@@ -494,14 +552,21 @@
                 if (!firebaseApi || !visitsRef) return;
 
                 firebaseApi.onValue(visitsRef, (snapshot) => {
-                    if (counterEl) counterEl.textContent = snapshot.val() ?? 0;
+                    const value = Number(snapshot.val()) || 0;
+                    if (counterEl) counterEl.textContent = String(value);
                 }, (error) => {
                     console.error('Error leyendo el contador global:', error);
                 });
 
-                firebaseApi.runTransaction(visitsRef, (currentValue) => (currentValue ?? 0) + 1)
+                firebaseApi.runTransaction(visitsRef, (currentValue) => (Number(currentValue) || 0) + 1)
+                    .then((result) => {
+                        if (counterEl) counterEl.textContent = String(Number(result.snapshot.val()) || 0);
+                    })
                     .catch((error) => {
                         console.error('Error actualizando visitas globales. Revisa las reglas de Firebase:', error);
+                        const fallbackValue = Number(localStorage.getItem('profile-visit-counter') || '0') + 1;
+                        localStorage.setItem('profile-visit-counter', String(fallbackValue));
+                        if (counterEl) counterEl.textContent = String(fallbackValue);
                     });
             };
 
@@ -624,16 +689,28 @@
             panel.setAttribute('aria-hidden', String(!shouldOpen));
         }
 
-        document.getElementById('book-btn').addEventListener('click', () => toggleNotebook());
-        document.getElementById('notebook-close').addEventListener('click', () => toggleNotebook(false));
-        document.getElementById('notebook-overlay').addEventListener('click', () => toggleNotebook(false));
+        const bookButton = document.getElementById('book-btn');
+        const notebookCloseButton = document.getElementById('notebook-close');
+        const notebookOverlay = document.getElementById('notebook-overlay');
+
+        if (bookButton) {
+            bookButton.addEventListener('click', () => toggleNotebook());
+        }
+        if (notebookCloseButton) {
+            notebookCloseButton.addEventListener('click', () => toggleNotebook(false));
+        }
+        if (notebookOverlay) {
+            notebookOverlay.addEventListener('click', () => toggleNotebook(false));
+        }
 
         document.querySelectorAll('.notebook-tab').forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelectorAll('.notebook-tab').forEach(tab => tab.classList.toggle('active', tab === button));
                 const tabName = button.dataset.tab;
-                document.getElementById('panel-notes').classList.toggle('active', tabName === 'notes');
-                document.getElementById('panel-dates').classList.toggle('active', tabName === 'dates');
+                const notesPanel = document.getElementById('panel-notes');
+                const datesPanel = document.getElementById('panel-dates');
+                if (notesPanel) notesPanel.classList.toggle('active', tabName === 'notes');
+                if (datesPanel) datesPanel.classList.toggle('active', tabName === 'dates');
             });
         });
 
@@ -742,7 +819,7 @@
         updateClockAndCalendar();
         buildCalendar();
         loadTrack(currentTrackIndex);
-        playCurrentTrack();
+        setTimeout(tryAutoplayAudio, 250);
         initVisitCounter();
         initStars();
     </script>
