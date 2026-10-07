@@ -685,6 +685,7 @@
         }
 
         .dock-icon {
+            position: relative;
             width: 48px;
             height: 48px;
             border-radius: 13px;
@@ -695,7 +696,7 @@
             font-size: 1.5rem;
             cursor: pointer;
             text-decoration: none;
-            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, filter 0.28s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, filter 0.24s ease;
             box-shadow: 0 10px 18px rgba(0,0,0,0.18);
         }
 
@@ -718,11 +719,70 @@
         }
 
         .dock-icon:hover {
-            transform: translateY(-10px) scale(1.12);
+            transform: translateY(-5px) scale(1.06);
             box-shadow: 0 16px 26px rgba(0,0,0,0.24);
             filter: brightness(1.08);
         }
-        .dock-icon:active { transform: scale(0.96); }
+        .dock-icon:focus-visible {
+            outline: 2px solid rgba(255,255,255,0.9);
+            outline-offset: 4px;
+            transform: translateY(-5px) scale(1.06);
+        }
+        .dock-icon:active { transform: scale(0.98); }
+
+        .dock-tooltip {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 13px);
+            z-index: 1;
+            width: max-content;
+            max-width: min(220px, calc(100vw - 32px));
+            padding: 8px 11px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 10px;
+            background: rgba(18,20,26,0.94);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 500;
+            line-height: 1.35;
+            text-align: center;
+            white-space: normal;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translate(-50%, 4px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+        }
+
+        .dock-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: rgba(18,20,26,0.94);
+            border-right: 1px solid rgba(255,255,255,0.18);
+            border-bottom: 1px solid rgba(255,255,255,0.18);
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .dock-icon:hover .dock-tooltip,
+        .dock-icon:focus-visible .dock-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .dock-icon,
+            .dock-tooltip {
+                transition: none;
+            }
+        }
 
         .icon-spotify { background: #000000; }
         .icon-discord { background: #000000; }
